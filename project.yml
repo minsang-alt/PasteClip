@@ -1,0 +1,44 @@
+name: PasteClip
+options:
+  bundleIdPrefix: com.minsang
+  deploymentTarget:
+    macOS: "15.0"
+  xcodeVersion: "16.0"
+  createIntermediateGroups: true
+  developmentLanguage: en
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MACOSX_DEPLOYMENT_TARGET: "15.0"
+    ENABLE_USER_SCRIPT_SANDBOXING: "YES"
+
+packages:
+  KeyboardShortcuts:
+    url: https://github.com/sindresorhus/KeyboardShortcuts
+    from: "2.2.0"
+
+targets:
+  PasteClip:
+    type: application
+    platform: macOS
+    sources:
+      - PasteClip
+    resources:
+      - PasteClip/Resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.minsang.PasteClip
+        PRODUCT_NAME: PasteClip
+        INFOPLIST_FILE: PasteClip/Info.plist
+        CODE_SIGN_ENTITLEMENTS: PasteClip/PasteClip.entitlements
+        GENERATE_INFOPLIST_FILE: false
+        ENABLE_HARDENED_RUNTIME: "YES"
+        SWIFT_STRICT_CONCURRENCY: complete
+    dependencies:
+      - package: KeyboardShortcuts
+    entitlements:
+      path: PasteClip/PasteClip.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.files.user-selected.read-only: true
