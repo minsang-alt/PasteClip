@@ -19,7 +19,17 @@
 
 ## Screenshots
 
-<!-- TODO: Add screenshots or GIF demo here -->
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/89bc1e23-da1a-4123-a4bc-4f55a403fc62" width="800" alt="Copy Once, Find Always">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2a6d65c4-9c9e-43d5-8b10-8d0ec0427ed2" width="800" alt="Everything You Copy, Organized">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/355bc333-dca2-4ea8-a0fd-16c61f9fa163" width="800" alt="Find What You Copied In Seconds">
+</p>
 
 ## Features
 
