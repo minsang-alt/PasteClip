@@ -6,15 +6,20 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
     <item>
-      <title>Version 1.0.1</title>
-      <sparkle:version>1</sparkle:version>
-      <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
-      <pubDate>Sat, 01 Mar 2026 00:00:00 +0900</pubDate>
+      <title>Version 1.0.2</title>
+      <sparkle:version>2</sparkle:version>
+      <sparkle:shortVersionString>1.0.2</sparkle:shortVersionString>
+      <description><![CDATA[
+        <ul>
+          <li>Added Sparkle auto-update support</li>
+        </ul>
+      ]]></description>
+      <pubDate>Sat, 01 Mar 2026 12:00:00 +0900</pubDate>
       <enclosure
-        url="https://github.com/minsang-alt/PasteClip/releases/download/v1.0.1/PasteClip-1.0.1.dmg"
+        url="https://github.com/minsang-alt/PasteClip/releases/download/v1.0.2/PasteClip-1.0.2.dmg"
         type="application/octet-stream"
-        sparkle:edSignature="REPLACE_WITH_SIGNATURE"
-        length="0"
+        sparkle:edSignature="x1BmIrwQki2yQNvSnf64IKPDmmPwdbjPMecbj68C9qZ605IYMENeN/f+WQa6SL4XFvw2aNW1QJA91DEX3O8yCw=="
+        length="3898066"
       />
     </item>
   </channel>
