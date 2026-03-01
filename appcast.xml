@@ -6,6 +6,24 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
     <item>
+      <title>Version 1.0.3</title>
+      <sparkle:version>3</sparkle:version>
+      <sparkle:shortVersionString>1.0.3</sparkle:shortVersionString>
+      <description><![CDATA[
+        <ul>
+          <li>Fixed keyboard navigation not working in History tab</li>
+          <li>Updated app icon</li>
+        </ul>
+      ]]></description>
+      <pubDate>Sat, 01 Mar 2026 15:00:00 +0900</pubDate>
+      <enclosure
+        url="https://github.com/minsang-alt/PasteClip/releases/download/v1.0.3/PasteClip-1.0.3.dmg"
+        type="application/octet-stream"
+        sparkle:edSignature="aKMloGFOalvVTjKPvsLeCK+1LugLUQXSA1Y7IDe5p7aLjhZMzmy/pCkqi2zy3gC91KVdDrQGhHfJYaGkiZpKAA=="
+        length="4590458"
+      />
+    </item>
+    <item>
       <title>Version 1.0.2</title>
       <sparkle:version>2</sparkle:version>
       <sparkle:shortVersionString>1.0.2</sparkle:shortVersionString>

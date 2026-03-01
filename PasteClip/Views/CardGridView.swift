@@ -66,7 +66,29 @@ struct CardGridView: View {
             }
         }
         .onChange(of: items) { _, newItems in
-            appState.currentFilteredItems = appState.searchState.filteredItems(from: newItems)
+            if appState.selectedTab == .history {
+                appState.currentFilteredItems = appState.searchState.filteredItems(from: newItems)
+            }
+        }
+        .onChange(of: appState.selectedTab) { _, newTab in
+            if newTab == .history {
+                appState.currentFilteredItems = appState.searchState.filteredItems(from: items)
+            }
+        }
+        .onChange(of: appState.searchState.debouncedSearchText) { _, _ in
+            if appState.selectedTab == .history {
+                appState.currentFilteredItems = appState.searchState.filteredItems(from: items)
+            }
+        }
+        .onChange(of: appState.searchState.selectedContentTypes) { _, _ in
+            if appState.selectedTab == .history {
+                appState.currentFilteredItems = appState.searchState.filteredItems(from: items)
+            }
+        }
+        .onChange(of: appState.searchState.dateFilter) { _, _ in
+            if appState.selectedTab == .history {
+                appState.currentFilteredItems = appState.searchState.filteredItems(from: items)
+            }
         }
         .onAppear {
             appState.currentFilteredItems = appState.searchState.filteredItems(from: items)
