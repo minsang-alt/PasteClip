@@ -37,11 +37,15 @@ struct HistoryPanelView: View {
 
                 NavigationBarView()
 
-                if appState.selectedTab == .history {
+                ZStack {
                     CardGridView()
-                } else if case .pinboard(let id) = appState.selectedTab {
-                    PinboardGridView(pinboardId: id)
-                        .id(id)
+                        .opacity(appState.selectedTab == .history ? 1 : 0)
+                        .allowsHitTesting(appState.selectedTab == .history)
+
+                    if case .pinboard(let id) = appState.selectedTab {
+                        PinboardGridView(pinboardId: id)
+                            .id(id)
+                    }
                 }
             }
             .onChange(of: appState.selectedTab) { _, _ in

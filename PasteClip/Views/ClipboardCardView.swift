@@ -111,6 +111,7 @@ struct ClipboardCardView: View {
             Button("Save") {
                 let trimmed = renameText.trimmingCharacters(in: .whitespaces)
                 item.userTitle = trimmed.isEmpty ? nil : trimmed
+                try? modelContext.save()
             }
         }
     }
@@ -234,6 +235,7 @@ struct ClipboardCardView: View {
         let entry = PinboardEntry(clipboardItem: item, pinboard: pinboard, displayOrder: nextOrder)
         modelContext.insert(entry)
         item.isPinned = true
+        try? modelContext.save()
     }
 
     private func deleteItem() {
@@ -247,6 +249,7 @@ struct ClipboardCardView: View {
             }
         }
         modelContext.delete(item)
+        try? modelContext.save()
     }
 }
 

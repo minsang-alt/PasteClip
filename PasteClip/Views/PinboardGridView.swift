@@ -136,6 +136,7 @@ struct PinboardGridView: View {
         orderedEntries.removeAll { $0.id == entry.id }
         modelContext.delete(entry)
         commitOrder()
+        try? modelContext.save()
     }
 }
 

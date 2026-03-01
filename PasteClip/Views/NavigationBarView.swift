@@ -40,6 +40,7 @@ struct NavigationBarView: View {
             Button("Save") {
                 renamingPinboard?.name = renameText
                 renamingPinboard = nil
+                try? modelContext.save()
             }
         }
     }
@@ -248,6 +249,7 @@ struct NavigationBarView: View {
         guard !name.isEmpty else { return }
         let pinboard = Pinboard(name: name, displayOrder: pinboards.count)
         modelContext.insert(pinboard)
+        try? modelContext.save()
         newPinboardName = ""
         appState.selectedTab = .pinboard(pinboard.id)
     }
@@ -257,6 +259,7 @@ struct NavigationBarView: View {
             appState.selectedTab = .history
         }
         modelContext.delete(pinboard)
+        try? modelContext.save()
     }
 }
 
