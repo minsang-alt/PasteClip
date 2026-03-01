@@ -73,11 +73,55 @@ hdiutil create \
     "${DMG_OUTPUT}"
 
 # Calculate SHA256
+SHA256=$(shasum -a 256 "${DMG_OUTPUT}" | awk '{print $1}')
+DMG_SIZE=$(stat -f%z "${DMG_OUTPUT}")
+
 echo ""
 echo "==> Build complete!"
 echo "    DMG: ${DMG_OUTPUT}"
-echo "    SHA256: $(shasum -a 256 "${DMG_OUTPUT}" | awk '{print $1}')"
+echo "    SHA256: ${SHA256}"
 echo "    Size: $(du -h "${DMG_OUTPUT}" | awk '{print $1}')"
+
+# EdDSA signing with Sparkle
+SIGN_UPDATE="${BUILD_DIR}/sign_update"
+SPARKLE_PKG_DIR=$(find "${PROJECT_DIR}/.build" "${HOME}/Library/Developer/Xcode/DerivedData" -path "*/Sparkle.framework" -maxdepth 10 2>/dev/null | head -1 | xargs dirname 2>/dev/null || true)
+
+if [ -z "${SPARKLE_PKG_DIR}" ]; then
+    # Try SPM .build directory
+    SIGN_UPDATE_SEARCH=$(find "${PROJECT_DIR}" -name "sign_update" -path "*Sparkle*" 2>/dev/null | head -1 || true)
+    if [ -n "${SIGN_UPDATE_SEARCH}" ]; then
+        SIGN_UPDATE="${SIGN_UPDATE_SEARCH}"
+    fi
+fi
+
+if command -v "${SIGN_UPDATE}" &>/dev/null || [ -x "${SIGN_UPDATE}" ]; then
+    echo ""
+    echo "==> Signing DMG with EdDSA..."
+    ED_SIGNATURE=$("${SIGN_UPDATE}" "${DMG_OUTPUT}" 2>&1 | grep "sparkle:edSignature" | sed 's/.*sparkle:edSignature="\([^"]*\)".*/\1/' || true)
+
+    if [ -n "${ED_SIGNATURE}" ]; then
+        echo "    EdDSA Signature: ${ED_SIGNATURE}"
+
+        # Update appcast.xml
+        APPCAST="${PROJECT_DIR}/appcast.xml"
+        if [ -f "${APPCAST}" ]; then
+            echo "==> Updating appcast.xml..."
+            sed -i '' "s|sparkle:edSignature=\"[^\"]*\"|sparkle:edSignature=\"${ED_SIGNATURE}\"|" "${APPCAST}"
+            sed -i '' "s|length=\"[^\"]*\"|length=\"${DMG_SIZE}\"|" "${APPCAST}"
+            echo "    appcast.xml updated with signature and file size"
+        fi
+    else
+        echo "    WARNING: Could not extract EdDSA signature. Run manually:"
+        echo "    sign_update \"${DMG_OUTPUT}\""
+    fi
+else
+    echo ""
+    echo "==> Sparkle sign_update not found. To sign the DMG:"
+    echo "    1. Build the project first to download Sparkle"
+    echo "    2. Find sign_update in Sparkle's bin/ directory"
+    echo "    3. Run: sign_update \"${DMG_OUTPUT}\""
+fi
+
 echo ""
 echo "==> To create a GitHub release:"
 echo "    git tag v${VERSION}"

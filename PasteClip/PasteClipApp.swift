@@ -1,9 +1,11 @@
 import SwiftUI
 import SwiftData
+import Sparkle
 
 @main
 struct PasteClipApp: App {
     @State private var appState = AppState()
+    @StateObject private var updaterViewModel = CheckForUpdatesViewModel()
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -36,6 +38,7 @@ struct PasteClipApp: App {
         MenuBarExtra("PasteClip", systemImage: "clipboard") {
             MenuBarContentView()
                 .environment(appState)
+                .environmentObject(updaterViewModel)
                 .modelContainer(sharedModelContainer)
         }
         .menuBarExtraStyle(.window)
@@ -43,6 +46,7 @@ struct PasteClipApp: App {
         Settings {
             SettingsView()
                 .environment(appState)
+                .environmentObject(updaterViewModel)
                 .modelContainer(sharedModelContainer)
         }
     }

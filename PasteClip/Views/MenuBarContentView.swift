@@ -4,6 +4,7 @@ import SwiftData
 struct MenuBarContentView: View {
     @Environment(AppState.self) private var appState
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var updaterViewModel: CheckForUpdatesViewModel
     @Query(sort: \ClipboardItem.copiedAt, order: .reverse)
     private var recentItems: [ClipboardItem]
 
@@ -63,6 +64,13 @@ struct MenuBarContentView: View {
 
             Divider()
                 .padding(.vertical, 4)
+
+            Button("Check for Updates...") {
+                updaterViewModel.checkForUpdates()
+            }
+            .disabled(!updaterViewModel.canCheckForUpdates)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 4)
 
             SettingsLink {
                 Text("Settings...")

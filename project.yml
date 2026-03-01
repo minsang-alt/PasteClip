@@ -17,6 +17,9 @@ packages:
   KeyboardShortcuts:
     url: https://github.com/sindresorhus/KeyboardShortcuts
     from: "2.2.0"
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: "2.7.0"
 
 targets:
   PasteClip:
@@ -37,8 +40,11 @@ targets:
         SWIFT_STRICT_CONCURRENCY: complete
     dependencies:
       - package: KeyboardShortcuts
+      - package: Sparkle
+        product: Sparkle
     entitlements:
       path: PasteClip/PasteClip.entitlements
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.files.user-selected.read-only: true
+        com.apple.security.network.client: true

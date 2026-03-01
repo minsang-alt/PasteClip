@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct AboutTab: View {
+    @EnvironmentObject private var updaterViewModel: CheckForUpdatesViewModel
+
     private var appVersion: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
     }
@@ -27,6 +29,11 @@ struct AboutTab: View {
             Text("A simple clipboard manager for macOS.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
+
+            Button("Check for Updates...") {
+                updaterViewModel.checkForUpdates()
+            }
+            .disabled(!updaterViewModel.canCheckForUpdates)
 
             Spacer()
         }
