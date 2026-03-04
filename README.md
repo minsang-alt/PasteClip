@@ -98,3 +98,10 @@ This project is licensed under the [GNU General Public License v3.0](LICENSE).
 
 - [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) by Sindre Sorhus — Global keyboard shortcuts for macOS
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen) by Yonas Kolb — Xcode project generation from YAML
+
+## Privacy
+
+- **Local-only storage:** Clipboard history is stored on your device.
+- **No servers / no accounts:** PasteClip does not use any backend server and does not require sign-in.
+- **No telemetry:** PasteClip does not collect analytics, tracking, or usage data.
+- **No network required:** Core functionality works fully offline and does not require an internet connection.
