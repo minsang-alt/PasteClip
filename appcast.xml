@@ -6,6 +6,23 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
     <item>
+      <title>Version 1.0.6</title>
+      <sparkle:version>6</sparkle:version>
+      <sparkle:shortVersionString>1.0.6</sparkle:shortVersionString>
+      <description><![CDATA[
+        <ul>
+          <li>Added macOS 14 Sonoma support</li>
+        </ul>
+      ]]></description>
+      <pubDate>Fri, 07 Mar 2026 15:00:00 +0900</pubDate>
+      <enclosure
+        url="https://github.com/minsang-alt/PasteClip/releases/download/v1.0.6/PasteClip-1.0.6.dmg"
+        type="application/octet-stream"
+        sparkle:edSignature="f7vy1gKEsTQttn+/xBYCDHtXGKKJxEYBitygLF7qBxU4a7fV9PGstjAnK42XY1DpzwYBxA7AnaUtn8X2vSzcAw=="
+        length="4613813"
+      />
+    </item>
+    <item>
       <title>Version 1.0.5</title>
       <sparkle:version>5</sparkle:version>
       <sparkle:shortVersionString>1.0.5</sparkle:shortVersionString>
