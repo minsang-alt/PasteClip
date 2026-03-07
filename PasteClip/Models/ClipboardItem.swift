@@ -5,8 +5,6 @@ import UniformTypeIdentifiers
 
 @Model
 final class ClipboardItem {
-    #Unique<ClipboardItem>([\.contentHash])
-    #Index<ClipboardItem>([\.copiedAt], [\.contentHash], [\.sourceAppBundleId])
 
     var id: UUID
     var contentTypeRaw: String

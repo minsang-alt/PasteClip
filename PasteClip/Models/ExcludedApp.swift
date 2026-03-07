@@ -3,7 +3,6 @@ import SwiftData
 
 @Model
 final class ExcludedApp {
-    #Unique<ExcludedApp>([\.bundleId])
 
     var bundleId: String
     var appName: String
