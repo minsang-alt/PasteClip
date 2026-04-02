@@ -39,7 +39,7 @@ xcodebuild archive \
     -configuration Release \
     -archivePath "${ARCHIVE_PATH}" \
     CODE_SIGN_IDENTITY="-" \
-    CODE_SIGNING_ALLOWED=NO \
+    CODE_SIGNING_ALLOWED=YES \
     ONLY_ACTIVE_ARCH=NO \
     | tail -5
 
@@ -59,6 +59,12 @@ if [ ! -d "${APP_PATH}" ]; then
 fi
 
 cp -R "${APP_PATH}" "${DMG_DIR}/"
+
+# Re-sign with stable designated requirement (identifier-based, not cdhash-based)
+# This ensures Sparkle can validate updates between different ad-hoc signed builds
+echo "==> Re-signing with stable designated requirement..."
+BUNDLE_ID=$(/usr/libexec/PlistBuddy -c "Print CFBundleIdentifier" "${DMG_DIR}/${APP_NAME}.app/Contents/Info.plist")
+codesign --force --sign - --requirements "=designated => identifier \"${BUNDLE_ID}\"" "${DMG_DIR}/${APP_NAME}.app"
 
 # Create symlink to /Applications in DMG staging
 ln -s /Applications "${DMG_DIR}/Applications"
