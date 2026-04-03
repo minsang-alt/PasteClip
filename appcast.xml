@@ -6,6 +6,24 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
     <item>
+      <title>Version 1.1.1</title>
+      <sparkle:version>11</sparkle:version>
+      <sparkle:shortVersionString>1.1.1</sparkle:shortVersionString>
+      <description><![CDATA[
+        <ul>
+          <li>Added "Clear All History" button and keyboard shortcut (⇧⌘⌫)</li>
+          <li>Pinboard items are preserved when clearing history</li>
+        </ul>
+      ]]></description>
+      <pubDate>Fri, 04 Apr 2026 00:20:00 +0900</pubDate>
+      <enclosure
+        url="https://github.com/minsang-alt/PasteClip/releases/download/v1.1.1/PasteClip-1.1.1.dmg"
+        type="application/octet-stream"
+        sparkle:edSignature="uGQ2NHce6Va86u/ZSbRgivUXQbmV9UMrVpXSYy2F2VDACQNVWDfdxCTotn5UfU2sKus9zwo54xgH2cLkVjVcAQ=="
+        length="4640558"
+      />
+    </item>
+    <item>
       <title>Version 1.1.0</title>
       <sparkle:version>10</sparkle:version>
       <sparkle:shortVersionString>1.1.0</sparkle:shortVersionString>
@@ -18,8 +36,8 @@
       <enclosure
         url="https://github.com/minsang-alt/PasteClip/releases/download/v1.1.0/PasteClip-v1.1.0.dmg"
         type="application/octet-stream"
-        sparkle:edSignature="uGQ2NHce6Va86u/ZSbRgivUXQbmV9UMrVpXSYy2F2VDACQNVWDfdxCTotn5UfU2sKus9zwo54xgH2cLkVjVcAQ=="
-        length="4640558"
+        sparkle:edSignature="placeholder"
+        length="4640000"
       />
     </item>
     <item>
