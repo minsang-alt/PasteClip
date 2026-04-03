@@ -78,6 +78,42 @@ hdiutil create \
     -format UDZO \
     "${DMG_OUTPUT}"
 
+# Verify code signing inside DMG
+echo "==> Verifying code signing inside DMG..."
+VERIFY_MOUNT="${BUILD_DIR}/verify_mount"
+mkdir -p "${VERIFY_MOUNT}"
+hdiutil attach "${DMG_OUTPUT}" -nobrowse -mountpoint "${VERIFY_MOUNT}" -quiet
+
+VERIFY_OUTPUT=$(codesign -d -v "${VERIFY_MOUNT}/${APP_NAME}.app" 2>&1)
+VERIFY_ID=$(echo "${VERIFY_OUTPUT}" | grep "^Identifier=" | head -1 | sed 's/^Identifier=//')
+VERIFY_FLAGS=$(echo "${VERIFY_OUTPUT}" | grep "^CodeDirectory" || true)
+
+# Check 1: Must have proper bundle identifier (not just binary name)
+if [ "${VERIFY_ID}" != "com.minsang.PasteClip" ]; then
+    echo "    FATAL: DMG app has wrong identifier: '${VERIFY_ID}' (expected 'com.minsang.PasteClip')"
+    hdiutil detach "${VERIFY_MOUNT}" -quiet
+    exit 1
+fi
+
+# Check 2: Must not be linker-signed (which means re-sign didn't apply)
+if echo "${VERIFY_FLAGS}" | grep -q "linker-signed"; then
+    echo "    FATAL: DMG app is only linker-signed (re-sign was not applied)"
+    hdiutil detach "${VERIFY_MOUNT}" -quiet
+    exit 1
+fi
+
+# Check 3: Deep verification
+DEEP_OUTPUT=$(codesign -vvv --deep "${VERIFY_MOUNT}/${APP_NAME}.app" 2>&1)
+if ! echo "${DEEP_OUTPUT}" | grep -q "valid on disk"; then
+    echo "    FATAL: DMG app failed deep code signing verification"
+    echo "    ${DEEP_OUTPUT}"
+    hdiutil detach "${VERIFY_MOUNT}" -quiet
+    exit 1
+fi
+
+hdiutil detach "${VERIFY_MOUNT}" -quiet
+echo "    ✓ Code signing verified (id=${VERIFY_ID}, deep validation passed)"
+
 # Calculate SHA256
 SHA256=$(shasum -a 256 "${DMG_OUTPUT}" | awk '{print $1}')
 DMG_SIZE=$(stat -f%z "${DMG_OUTPUT}")
