@@ -39,7 +39,7 @@
 ### Homebrew (Recommended)
 
 ```bash
-brew install --cask --no-quarantine minsang-alt/tap/pasteclip
+brew install --cask minsang-alt/tap/pasteclip
 ```
 
 ### GitHub Releases
@@ -48,7 +48,7 @@ Download the latest `.dmg` from the [Releases](https://github.com/minsang-alt/Pa
 
 > **Gatekeeper Warning:** Since the app is not notarized, macOS may show a warning on first launch.
 > To resolve: **System Settings → Privacy & Security → scroll down → click "Open Anyway"**,
-> or use the `--no-quarantine` flag with Homebrew.
+
 
 ### Build from Source
 
