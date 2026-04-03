@@ -89,43 +89,42 @@ echo "    SHA256: ${SHA256}"
 echo "    Size: $(du -h "${DMG_OUTPUT}" | awk '{print $1}')"
 
 # EdDSA signing with Sparkle
-SIGN_UPDATE="${BUILD_DIR}/sign_update"
-SPARKLE_PKG_DIR=$(find "${PROJECT_DIR}/.build" "${HOME}/Library/Developer/Xcode/DerivedData" -path "*/Sparkle.framework" -maxdepth 10 2>/dev/null | head -1 | xargs dirname 2>/dev/null || true)
+SIGN_UPDATE=$(find "${HOME}/Library/Developer/Xcode/DerivedData" "${PROJECT_DIR}/.build" -name "sign_update" -path "*/Sparkle/bin/*" 2>/dev/null | head -1 || true)
 
-if [ -z "${SPARKLE_PKG_DIR}" ]; then
-    # Try SPM .build directory
-    SIGN_UPDATE_SEARCH=$(find "${PROJECT_DIR}" -name "sign_update" -path "*Sparkle*" 2>/dev/null | head -1 || true)
-    if [ -n "${SIGN_UPDATE_SEARCH}" ]; then
-        SIGN_UPDATE="${SIGN_UPDATE_SEARCH}"
-    fi
-fi
-
-if command -v "${SIGN_UPDATE}" &>/dev/null || [ -x "${SIGN_UPDATE}" ]; then
+if [ -x "${SIGN_UPDATE}" ]; then
     echo ""
     echo "==> Signing DMG with EdDSA..."
-    ED_SIGNATURE=$("${SIGN_UPDATE}" "${DMG_OUTPUT}" 2>&1 | grep "sparkle:edSignature" | sed 's/.*sparkle:edSignature="\([^"]*\)".*/\1/' || true)
+    SIGN_OUTPUT=$("${SIGN_UPDATE}" "${DMG_OUTPUT}" 2>&1)
+    ED_SIGNATURE=$(echo "${SIGN_OUTPUT}" | grep "sparkle:edSignature" | sed 's/.*sparkle:edSignature="\([^"]*\)".*/\1/' || true)
 
     if [ -n "${ED_SIGNATURE}" ]; then
         echo "    EdDSA Signature: ${ED_SIGNATURE}"
 
-        # Update appcast.xml
+        # Update appcast.xml — only the FIRST occurrence (current version)
         APPCAST="${PROJECT_DIR}/appcast.xml"
         if [ -f "${APPCAST}" ]; then
-            echo "==> Updating appcast.xml..."
-            sed -i '' "s|sparkle:edSignature=\"[^\"]*\"|sparkle:edSignature=\"${ED_SIGNATURE}\"|" "${APPCAST}"
-            sed -i '' "s|length=\"[^\"]*\"|length=\"${DMG_SIZE}\"|" "${APPCAST}"
+            echo "==> Updating appcast.xml (first item only)..."
+            awk -v sig="${ED_SIGNATURE}" -v len="${DMG_SIZE}" '
+                BEGIN { sig_done=0; len_done=0 }
+                !sig_done && /sparkle:edSignature=/ {
+                    sub(/sparkle:edSignature="[^"]*"/, "sparkle:edSignature=\"" sig "\"")
+                    sig_done=1
+                }
+                !len_done && /length=/ {
+                    sub(/length="[^"]*"/, "length=\"" len "\"")
+                    len_done=1
+                }
+                { print }
+            ' "${APPCAST}" > "${APPCAST}.tmp" && mv "${APPCAST}.tmp" "${APPCAST}"
             echo "    appcast.xml updated with signature and file size"
         fi
     else
-        echo "    WARNING: Could not extract EdDSA signature. Run manually:"
-        echo "    sign_update \"${DMG_OUTPUT}\""
+        echo "    WARNING: Could not extract EdDSA signature"
+        echo "    sign_update output: ${SIGN_OUTPUT}"
     fi
 else
     echo ""
-    echo "==> Sparkle sign_update not found. To sign the DMG:"
-    echo "    1. Build the project first to download Sparkle"
-    echo "    2. Find sign_update in Sparkle's bin/ directory"
-    echo "    3. Run: sign_update \"${DMG_OUTPUT}\""
+    echo "==> Sparkle sign_update not found. Build the project first to download Sparkle."
 fi
 
 echo ""
