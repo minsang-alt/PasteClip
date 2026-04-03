@@ -72,7 +72,7 @@ jobs:
 
             **Homebrew:**
             ```
-            brew install --cask --no-quarantine minsang-alt/tap/pasteclip
+            brew install --cask minsang-alt/tap/pasteclip
             ```
 
             **Manual:** Download `PasteClip-${{ steps.version.outputs.VERSION }}.dmg` below.
