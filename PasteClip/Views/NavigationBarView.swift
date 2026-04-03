@@ -12,6 +12,7 @@ struct NavigationBarView: View {
     @State private var newPinboardName = ""
     @State private var renamingPinboard: Pinboard?
     @State private var renameText = ""
+    @State private var isShowingClearAlert = false
     @FocusState private var isSearchFocused: Bool
 
     var body: some View {
@@ -30,6 +31,18 @@ struct NavigationBarView: View {
             TextField("Name", text: $newPinboardName)
             Button("Cancel", role: .cancel) { newPinboardName = "" }
             Button("Create") { createPinboard() }
+        }
+        .onChange(of: appState.clearHistoryRequested) { _, newValue in
+            if newValue {
+                appState.clearHistoryRequested = false
+                isShowingClearAlert = true
+            }
+        }
+        .alert("Clear All History", isPresented: $isShowingClearAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Delete All", role: .destructive) { clearHistory() }
+        } message: {
+            Text("This will permanently delete all clipboard history. Pinboard items will not be affected.")
         }
         .alert("Rename Pinboard", isPresented: .init(
             get: { renamingPinboard != nil },
@@ -165,6 +178,20 @@ struct NavigationBarView: View {
             .menuStyle(.borderlessButton)
             .menuIndicator(.hidden)
             .frame(width: 28)
+
+            // Clear history button (only in History tab)
+            if appState.selectedTab == .history {
+                Button {
+                    isShowingClearAlert = true
+                } label: {
+                    Image(systemName: "trash")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(DesignTokens.Nav.inactiveTextColor(for: colorScheme))
+                        .frame(width: 28, height: 28)
+                }
+                .buttonStyle(.plain)
+                .help("Clear All History")
+            }
         }
         .padding(.horizontal, DesignTokens.Nav.horizontalPadding)
     }
@@ -252,6 +279,22 @@ struct NavigationBarView: View {
         try? modelContext.save()
         newPinboardName = ""
         appState.selectedTab = .pinboard(pinboard.id)
+    }
+
+    private func clearHistory() {
+        let pinnedDescriptor = FetchDescriptor<PinboardEntry>()
+        let pinnedItemIDs: Set<UUID> = {
+            guard let entries = try? modelContext.fetch(pinnedDescriptor) else { return [] }
+            return Set(entries.compactMap { $0.clipboardItem?.id })
+        }()
+
+        let allItemsDescriptor = FetchDescriptor<ClipboardItem>()
+        guard let allItems = try? modelContext.fetch(allItemsDescriptor) else { return }
+
+        for item in allItems where !pinnedItemIDs.contains(item.id) {
+            modelContext.delete(item)
+        }
+        try? modelContext.save()
     }
 
     private func deletePinboard(_ pinboard: Pinboard) {

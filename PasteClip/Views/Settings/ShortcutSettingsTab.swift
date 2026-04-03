@@ -9,6 +9,11 @@ struct ShortcutSettingsTab: View {
                 Spacer()
                 KeyboardShortcuts.Recorder(for: .toggleHistoryPanel)
             }
+            HStack {
+                Text("Clear All History")
+                Spacer()
+                KeyboardShortcuts.Recorder(for: .clearHistory)
+            }
         }
         .formStyle(.grouped)
         .padding()

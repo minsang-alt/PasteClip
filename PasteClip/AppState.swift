@@ -48,10 +48,17 @@ final class AppState {
         panelController.hidePanel()
     }
 
+    var clearHistoryRequested = false
+
     private func setupHotkey() {
         KeyboardShortcuts.onKeyDown(for: .toggleHistoryPanel) { [weak self] in
             Task { @MainActor in
                 self?.togglePanel()
+            }
+        }
+        KeyboardShortcuts.onKeyDown(for: .clearHistory) { [weak self] in
+            Task { @MainActor in
+                self?.clearHistoryRequested = true
             }
         }
     }
