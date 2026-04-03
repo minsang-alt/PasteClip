@@ -18,33 +18,42 @@ struct HistoryPanelView: View {
                     .padding(.top, 8)
                     .padding(.bottom, 2)
 
-                if let previewItem = appState.previewItem {
-                    PreviewView(
-                        item: previewItem,
-                        onClose: {
-                            withAnimation(.easeOut(duration: 0.2)) {
-                                appState.searchState.selectedIndex = nil
-                                appState.selectForPreview(nil)
-                            }
-                        },
-                        onPaste: {
-                            appState.clipboardMonitor.skipNextChange()
-                            appState.pasteService.paste(item: previewItem)
-                            appState.hidePanel()
-                        }
-                    )
-                }
-
                 NavigationBarView()
 
                 ZStack {
-                    CardGridView()
-                        .opacity(appState.selectedTab == .history ? 1 : 0)
-                        .allowsHitTesting(appState.selectedTab == .history)
+                    // Cards layer
+                    Group {
+                        CardGridView()
+                            .opacity(appState.selectedTab == .history ? 1 : 0)
+                            .allowsHitTesting(appState.selectedTab == .history)
 
-                    if case .pinboard(let id) = appState.selectedTab {
-                        PinboardGridView(pinboardId: id)
-                            .id(id)
+                        if case .pinboard(let id) = appState.selectedTab {
+                            PinboardGridView(pinboardId: id)
+                                .id(id)
+                        }
+                    }
+                    .opacity(appState.previewItem == nil ? 1 : 0)
+
+                    // Preview layer (replaces cards)
+                    if let previewItem = appState.previewItem {
+                        PreviewView(
+                            item: previewItem,
+                            onClose: {
+                                withAnimation(.easeOut(duration: 0.2)) {
+                                    appState.searchState.selectedIndex = nil
+                                    appState.selectForPreview(nil)
+                                }
+                            },
+                            onPaste: {
+                                appState.clipboardMonitor.skipNextChange()
+                                appState.pasteService.paste(item: previewItem)
+                                appState.hidePanel()
+                            }
+                        )
+                        .transition(.asymmetric(
+                            insertion: .opacity.combined(with: .scale(scale: 0.96, anchor: .bottom)),
+                            removal: .opacity.combined(with: .scale(scale: 0.98, anchor: .bottom))
+                        ))
                     }
                 }
             }

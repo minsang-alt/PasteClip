@@ -29,8 +29,8 @@ struct PreviewView: View {
         )
         .shadow(color: .black.opacity(0.15), radius: 20, y: 6)
         .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 4)
         .transition(.asymmetric(
             insertion: .opacity.combined(with: .scale(scale: 0.96, anchor: .bottom)),
             removal: .opacity.combined(with: .scale(scale: 0.98, anchor: .bottom))
@@ -137,7 +137,7 @@ struct PreviewView: View {
                 colorPreview
             }
         }
-        .frame(height: 200)
+        .frame(maxHeight: .infinity)
         .clipped()
     }
 

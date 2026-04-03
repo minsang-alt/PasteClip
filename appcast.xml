@@ -6,6 +6,25 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
     <item>
+      <title>Version 1.0.9</title>
+      <sparkle:version>9</sparkle:version>
+      <sparkle:shortVersionString>1.0.9</sparkle:shortVersionString>
+      <description><![CDATA[
+        <ul>
+          <li>Improved spacebar preview: compact inline design, no panel resize</li>
+          <li>Fixed preview state persisting after closing panel</li>
+          <li>Arrow keys now update preview while browsing</li>
+        </ul>
+      ]]></description>
+      <pubDate>Thu, 03 Apr 2026 10:00:00 +0900</pubDate>
+      <enclosure
+        url="https://github.com/minsang-alt/PasteClip/releases/download/v1.0.9/PasteClip-1.0.9.dmg"
+        type="application/octet-stream"
+        sparkle:edSignature="ELLhH28XIxAM90KLqRdH/VH/mFGm7GBvAfd7XuDdoTOMcaTzKxFoJAuG9d1yurngXhGEtcXER1yEgmbTp1rGAg=="
+        length="4620378"
+      />
+    </item>
+    <item>
       <title>Version 1.0.8</title>
       <sparkle:version>8</sparkle:version>
       <sparkle:shortVersionString>1.0.8</sparkle:shortVersionString>

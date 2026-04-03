@@ -27,6 +27,7 @@ final class AppState {
         clipboardMonitor.start(modelContext: modelContext)
         panelController.onPanelWillHide = { [weak self] in
             self?.searchState.reset()
+            self?.previewItem = nil
         }
         setupHotkey()
     }
@@ -37,12 +38,7 @@ final class AppState {
     }
 
     func selectForPreview(_ item: ClipboardItem?) {
-        let wasShowing = previewItem != nil
-        let willShow = item != nil
         previewItem = item
-        if wasShowing != willShow {
-            panelController.resizePanel(showPreview: willShow)
-        }
     }
 
     func hidePanel() {

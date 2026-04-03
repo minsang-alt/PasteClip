@@ -13,7 +13,6 @@ final class PanelController {
     weak var appState: AppState?
 
     private let baseHeight: CGFloat = 320
-    private let previewHeight: CGFloat = 420
 
     func toggle(modelContainer: ModelContainer, appState: AppState) {
         if isVisible {
@@ -102,25 +101,6 @@ final class PanelController {
         })
     }
 
-    func resizePanel(showPreview: Bool) {
-        guard isVisible, let panel else { return }
-        let screenFrame = (NSScreen.main ?? NSScreen.screens.first!).visibleFrame
-        let targetHeight = showPreview ? baseHeight + previewHeight : baseHeight
-
-        let newFrame = NSRect(
-            x: panel.frame.origin.x,
-            y: screenFrame.origin.y,
-            width: panel.frame.width,
-            height: targetHeight
-        )
-
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.25
-            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-            panel.animator().setFrame(newFrame, display: true)
-        }
-    }
-
     // MARK: - Click Monitor (dismiss on outside click)
 
     private func installClickMonitor() {
@@ -193,10 +173,18 @@ final class PanelController {
 
         case 123: // Left arrow
             appState.searchState.moveSelection(by: -1, maxIndex: maxIndex)
+            if appState.previewItem != nil,
+               let idx = appState.searchState.selectedIndex, idx < items.count {
+                appState.previewItem = items[idx]
+            }
             return true
 
         case 124: // Right arrow
             appState.searchState.moveSelection(by: 1, maxIndex: maxIndex)
+            if appState.previewItem != nil,
+               let idx = appState.searchState.selectedIndex, idx < items.count {
+                appState.previewItem = items[idx]
+            }
             return true
 
         case 49: // Space - toggle preview
