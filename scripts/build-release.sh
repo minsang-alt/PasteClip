@@ -60,10 +60,22 @@ fi
 
 cp -R "${APP_PATH}" "${DMG_DIR}/"
 
-# Re-sign with stable designated requirement (identifier-based, not cdhash-based)
-# This ensures Sparkle can validate updates between different ad-hoc signed builds
+# Re-sign everything with ad-hoc signature (inside-out order)
+# Sparkle XPC services must be re-signed so they share the same signing authority
+# as the host app, otherwise XPC connection fails during updates
 echo "==> Re-signing with stable designated requirement..."
 BUNDLE_ID=$(/usr/libexec/PlistBuddy -c "Print CFBundleIdentifier" "${DMG_DIR}/${APP_NAME}.app/Contents/Info.plist")
+SPARKLE_FW="${DMG_DIR}/${APP_NAME}.app/Contents/Frameworks/Sparkle.framework/Versions/B"
+
+# Sign inner components first (inside-out)
+for xpc in "${SPARKLE_FW}/XPCServices/"*.xpc; do
+    codesign --force --sign - "$xpc"
+done
+codesign --force --sign - "${SPARKLE_FW}/Autoupdate"
+codesign --force --sign - "${SPARKLE_FW}/Updater.app"
+codesign --force --sign - "${DMG_DIR}/${APP_NAME}.app/Contents/Frameworks/Sparkle.framework"
+
+# Sign outer app last with identifier-based designated requirement
 codesign --force --sign - --requirements "=designated => identifier \"${BUNDLE_ID}\"" "${DMG_DIR}/${APP_NAME}.app"
 
 # Create symlink to /Applications in DMG staging
