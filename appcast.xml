@@ -6,6 +6,23 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
     <item>
+      <title>Version 1.1.2</title>
+      <sparkle:version>12</sparkle:version>
+      <sparkle:shortVersionString>1.1.2</sparkle:shortVersionString>
+      <description><![CDATA[
+        <ul>
+          <li>Fixed crash when deleting items from Pinboard</li>
+        </ul>
+      ]]></description>
+      <pubDate>Sat, 05 Apr 2026 00:40:00 +0900</pubDate>
+      <enclosure
+        url="https://github.com/minsang-alt/PasteClip/releases/download/v1.1.2/PasteClip-1.1.2.dmg"
+        type="application/octet-stream"
+        sparkle:edSignature="CqvvFj5akZy9w/JkHkc+/sD4tZ8ctG1rwiUpLzbSXbdlykWZOvCPjo11Rz5dro883NfMhlG0h1+OujLOxRrDCQ=="
+        length="4641120"
+      />
+    </item>
+    <item>
       <title>Version 1.1.1</title>
       <sparkle:version>11</sparkle:version>
       <sparkle:shortVersionString>1.1.1</sparkle:shortVersionString>
@@ -19,7 +36,7 @@
       <enclosure
         url="https://github.com/minsang-alt/PasteClip/releases/download/v1.1.1/PasteClip-1.1.1.dmg"
         type="application/octet-stream"
-        sparkle:edSignature="CqvvFj5akZy9w/JkHkc+/sD4tZ8ctG1rwiUpLzbSXbdlykWZOvCPjo11Rz5dro883NfMhlG0h1+OujLOxRrDCQ=="
+        sparkle:edSignature="placeholder"
         length="4641120"
       />
     </item>
