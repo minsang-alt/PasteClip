@@ -23,7 +23,7 @@ struct ClipboardCardView: View {
     }
 
     var body: some View {
-        if item.isDeleted {
+        if item.isDeleted || item.modelContext == nil {
             EmptyView()
         } else {
             cardBody

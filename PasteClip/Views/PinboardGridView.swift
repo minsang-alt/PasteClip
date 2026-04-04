@@ -120,7 +120,9 @@ struct PinboardGridView: View {
     }
 
     private func syncEntries() {
-        let current = (pinboard?.entries ?? []).sorted { $0.displayOrder < $1.displayOrder }
+        let current = (pinboard?.entries ?? [])
+            .filter { !$0.isDeleted && $0.clipboardItem != nil }
+            .sorted { $0.displayOrder < $1.displayOrder }
         if orderedEntries.map(\.id) != current.map(\.id) {
             orderedEntries = current
         }
