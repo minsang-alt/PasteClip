@@ -20,7 +20,7 @@
 ## Screenshots
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/89bc1e23-da1a-4123-a4bc-4f55a403fc62" width="800" alt="Copy Once, Find Always">
+  <img src="https://github.com/user-attachments/assets/ab8f7197-c7ed-44ed-9e18-bf7b0e5125cf" width="800" alt="Copy Once, Find Always">
 </p>
 
 ## Features
