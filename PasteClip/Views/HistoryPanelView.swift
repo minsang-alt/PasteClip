@@ -8,7 +8,8 @@ struct HistoryPanelView: View {
 
     var body: some View {
         ZStack {
-            VisualEffectBackground()
+            Rectangle()
+                .fill(Color(nsColor: .windowBackgroundColor))
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
@@ -56,6 +57,7 @@ struct HistoryPanelView: View {
                         ))
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .onChange(of: appState.selectedTab) { _, _ in
                 appState.searchState.selectedIndex = nil
