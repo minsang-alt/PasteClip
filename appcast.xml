@@ -6,6 +6,26 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
     <item>
+      <title>Version 1.1.3</title>
+      <sparkle:version>13</sparkle:version>
+      <sparkle:shortVersionString>1.1.3</sparkle:shortVersionString>
+      <description><![CDATA[
+        <ul>
+          <li>Unified navigation bar button styles with consistent hover effects</li>
+          <li>Disabled panel resizing</li>
+          <li>Made panel background opaque</li>
+          <li>Fixed navigation bar position when clipboard is empty</li>
+        </ul>
+      ]]></description>
+      <pubDate>Sat, 05 Apr 2026 17:30:00 +0900</pubDate>
+      <enclosure
+        url="https://github.com/minsang-alt/PasteClip/releases/download/v1.1.3/PasteClip-1.1.3.dmg"
+        type="application/octet-stream"
+        sparkle:edSignature="+wuow78rxsXJyEVi/8/XgdWLwQu2fWePR3QXE9lhXZsDvZnc5jRUCj5iIS2oIQ5CeKyhqfc0GcDCr3JenXmsBA=="
+        length="4636676"
+      />
+    </item>
+    <item>
       <title>Version 1.1.2</title>
       <sparkle:version>12</sparkle:version>
       <sparkle:shortVersionString>1.1.2</sparkle:shortVersionString>
