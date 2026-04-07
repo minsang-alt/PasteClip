@@ -103,8 +103,8 @@ enum DesignTokens {
 
         static func activeBackground(for colorScheme: ColorScheme) -> Color {
             colorScheme == .dark
-                ? Color(white: 0.35)
-                : Color(red: 0.82, green: 0.82, blue: 0.84) // #D1D1D7
+                ? Color.white.opacity(0.1)
+                : Color.black.opacity(0.06)
         }
 
         static func activeTextColor(for colorScheme: ColorScheme) -> Color {
