@@ -6,6 +6,23 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
     <item>
+      <title>Version 1.1.6</title>
+      <sparkle:version>16</sparkle:version>
+      <sparkle:shortVersionString>1.1.6</sparkle:shortVersionString>
+      <description><![CDATA[
+        <ul>
+          <li>Clear history shortcut now only works when panel is open</li>
+        </ul>
+      ]]></description>
+      <pubDate>Mon, 07 Apr 2026 23:50:00 +0900</pubDate>
+      <enclosure
+        url="https://github.com/minsang-alt/PasteClip/releases/download/v1.1.6/PasteClip-1.1.6.dmg"
+        type="application/octet-stream"
+        sparkle:edSignature="ElHiqjFUTfBlCd6+gHJfqVdki+b2DgTj2Ew9AVPAvbV5t1U5vlhHJhdZhYoh0AYAK249+Z4dfbL8HgUF9NAlDg=="
+        length="4637780"
+      />
+    </item>
+    <item>
       <title>Version 1.1.5</title>
       <sparkle:version>15</sparkle:version>
       <sparkle:shortVersionString>1.1.5</sparkle:shortVersionString>
