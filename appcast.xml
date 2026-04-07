@@ -6,6 +6,23 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
     <item>
+      <title>Version 1.1.7</title>
+      <sparkle:version>17</sparkle:version>
+      <sparkle:shortVersionString>1.1.7</sparkle:shortVersionString>
+      <description><![CDATA[
+        <ul>
+          <li>Translucent hover background for liquid UI style</li>
+        </ul>
+      ]]></description>
+      <pubDate>Tue, 08 Apr 2026 00:10:00 +0900</pubDate>
+      <enclosure
+        url="https://github.com/minsang-alt/PasteClip/releases/download/v1.1.7/PasteClip-v1.1.7.dmg"
+        type="application/octet-stream"
+        sparkle:edSignature="j/cw1M1kl6sHIKwwajFEGr+YpIiSfgj8xNm01s8vvaM4+xRMUly1EtyRt7M0u03mPYaWCFSO+CPpXfXkqjt1CQ=="
+        length="4637706"
+      />
+    </item>
+    <item>
       <title>Version 1.1.6</title>
       <sparkle:version>16</sparkle:version>
       <sparkle:shortVersionString>1.1.6</sparkle:shortVersionString>
