@@ -18,6 +18,7 @@
 3. DMG 빌드: `bash scripts/build-release.sh` (EdDSA 서명 + appcast.xml 자동 업데이트 포함)
 4. **`appcast.xml` 수정 (2가지 작업 필수)**:
    - **새 버전 item 추가**: 빌드 스크립트는 첫 번째 item의 서명/크기만 덮어쓸 뿐 새 항목을 생성하지 않음. 새 item을 기존 첫 번째 item 위에 추가하고 `sparkle:version`, `sparkle:shortVersionString`, URL, 릴리스 노트, EdDSA 서명, length를 정확히 기입할 것
+   - **appcast URL은 반드시 v-prefixed 파일명 사용**: `PasteClip-v{VERSION}.dmg` (v 접두사 있는 것). GitHub Releases에서 v 없는 파일명(`PasteClip-{VERSION}.dmg`)은 업로드 시 손상되는 문제가 있어 Sparkle 서명 검증이 실패함
    - **이전 버전 item의 서명/크기 복원**: 빌드 스크립트가 첫 번째 item의 `sparkle:edSignature`와 `length`를 새 빌드 값으로 덮어쓰므로, `git show HEAD:appcast.xml`로 원래 값을 확인해서 복원할 것. 이걸 빠뜨리면 이전 버전의 Sparkle 업데이트가 깨짐
 5. appcast.xml 커밋 & 푸시
 6. GitHub 릴리스 생성 + DMG 업로드 + **업로드 검증**:
@@ -26,10 +27,10 @@
    cp build/PasteClip-{VERSION}.dmg /tmp/PasteClip-v{VERSION}.dmg
    gh release create v{VERSION} build/PasteClip-{VERSION}.dmg /tmp/PasteClip-v{VERSION}.dmg --title "v{VERSION}" --notes "..."
    ```
-   **반드시 업로드 후 검증할 것:**
+   **반드시 업로드 후 v-prefixed DMG 검증할 것:**
    ```
-   gh release download v{VERSION} -p "PasteClip-{VERSION}.dmg" -D /tmp/verify --clobber
-   shasum -a 256 /tmp/verify/PasteClip-{VERSION}.dmg  # 빌드 스크립트 출력의 SHA256과 일치해야 함
+   gh release download v{VERSION} -p "PasteClip-v{VERSION}.dmg" -D /tmp/verify --clobber
+   shasum -a 256 /tmp/verify/PasteClip-v{VERSION}.dmg  # 빌드 스크립트 출력의 SHA256과 일치해야 함
    ```
 7. (선택) Homebrew tap 업데이트 (`minsang-alt/homebrew-tap`):
    - `Casks/pasteclip.rb`의 `version`과 `sha256` 변경 (sha256은 빌드 스크립트 출력에 나옴)
