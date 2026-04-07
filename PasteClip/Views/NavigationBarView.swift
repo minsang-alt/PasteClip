@@ -294,9 +294,9 @@ private struct NavTabButton: View {
             .padding(.horizontal, 10)
             .frame(height: DesignTokens.Nav.tabHeight)
             .background(
-                isActive
+                isHovered
                     ? DesignTokens.Nav.activeBackground(for: colorScheme)
-                    : (isHovered ? DesignTokens.Nav.activeBackground(for: colorScheme) : Color.clear)
+                    : Color.clear
             )
             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
