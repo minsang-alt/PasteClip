@@ -58,6 +58,7 @@ final class AppState {
         }
         KeyboardShortcuts.onKeyDown(for: .clearHistory) { [weak self] in
             Task { @MainActor in
+                guard self?.panelController.isVisible == true else { return }
                 self?.clearHistoryRequested = true
             }
         }
