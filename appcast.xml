@@ -6,6 +6,23 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
     <item>
+      <title>Version 1.1.5</title>
+      <sparkle:version>15</sparkle:version>
+      <sparkle:shortVersionString>1.1.5</sparkle:shortVersionString>
+      <description><![CDATA[
+        <ul>
+          <li>Tab buttons now show background only on hover</li>
+        </ul>
+      ]]></description>
+      <pubDate>Mon, 07 Apr 2026 23:30:00 +0900</pubDate>
+      <enclosure
+        url="https://github.com/minsang-alt/PasteClip/releases/download/v1.1.5/PasteClip-1.1.5.dmg"
+        type="application/octet-stream"
+        sparkle:edSignature="9neR2Q6CcpoZGZ1uV4romuRJE6G7JcbhpSPXDCqAS/QBCMU5f/hCs9d833w4VRqGA9747tKburJ4j6cTWOxVBw=="
+        length="4638289"
+      />
+    </item>
+    <item>
       <title>Version 1.1.4</title>
       <sparkle:version>14</sparkle:version>
       <sparkle:shortVersionString>1.1.4</sparkle:shortVersionString>
