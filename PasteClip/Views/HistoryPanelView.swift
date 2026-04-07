@@ -8,8 +8,7 @@ struct HistoryPanelView: View {
 
     var body: some View {
         ZStack {
-            Rectangle()
-                .fill(Color(nsColor: .windowBackgroundColor))
+            VisualEffectBackground()
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {

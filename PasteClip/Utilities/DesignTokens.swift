@@ -115,7 +115,7 @@ enum DesignTokens {
 
         static func inactiveTextColor(for colorScheme: ColorScheme) -> Color {
             colorScheme == .dark
-                ? Color(white: 0.5)
+                ? Color(white: 0.75)
                 : Color(red: 0.4, green: 0.4, blue: 0.4) // #666666
         }
     }
