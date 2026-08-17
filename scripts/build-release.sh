@@ -216,7 +216,18 @@ SIGN_UPDATE=$(find "${HOME}/Library/Developer/Xcode/DerivedData" "${PROJECT_DIR}
 if [ -x "${SIGN_UPDATE}" ]; then
     echo ""
     echo "==> Signing DMG with EdDSA..."
-    SIGN_OUTPUT=$("${SIGN_UPDATE}" "${DMG_OUTPUT}" 2>&1)
+    SIGN_FAILED=false
+    if ! SIGN_OUTPUT=$("${SIGN_UPDATE}" "${DMG_OUTPUT}" 2>&1); then
+        if [ "${SIGN_IDENTITY}" = "-" ] && echo "${SIGN_OUTPUT}" | grep -q "Signing key not found"; then
+            SIGN_FAILED=true
+            echo "    WARNING: Sparkle signing key not configured; continuing ad-hoc build"
+            echo "    sign_update output: ${SIGN_OUTPUT}"
+        else
+            echo "    FATAL: Sparkle EdDSA signing failed"
+            echo "    sign_update output: ${SIGN_OUTPUT}"
+            exit 1
+        fi
+    fi
     ED_SIGNATURE=$(echo "${SIGN_OUTPUT}" | grep "sparkle:edSignature" | sed 's/.*sparkle:edSignature="\([^"]*\)".*/\1/' || true)
 
     if [ -n "${ED_SIGNATURE}" ]; then
@@ -240,7 +251,11 @@ if [ -x "${SIGN_UPDATE}" ]; then
             ' "${APPCAST}" > "${APPCAST}.tmp" && mv "${APPCAST}.tmp" "${APPCAST}"
             echo "    appcast.xml updated with signature and file size"
         fi
-    else
+    elif [ "${SIGN_IDENTITY}" != "-" ]; then
+        echo "    FATAL: Could not extract Sparkle EdDSA signature"
+        echo "    sign_update output: ${SIGN_OUTPUT}"
+        exit 1
+    elif [ "${SIGN_FAILED}" = false ]; then
         echo "    WARNING: Could not extract EdDSA signature"
         echo "    sign_update output: ${SIGN_OUTPUT}"
     fi
