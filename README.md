@@ -104,6 +104,18 @@ PasteClip is signed with an Apple Developer ID and notarized by Apple (as of v1.
 
 The global shortcuts can be changed in **Settings → Shortcuts**.
 
+### Image clips in terminal apps
+
+Selecting an image clip puts the image back on the macOS clipboard, but a shell prompt itself cannot accept image data. The app or CLI running inside the terminal must support clipboard image input.
+
+For example, with Codex CLI on macOS:
+
+1. Press `⌘ ⇧ V` and select the image clip you want to reuse.
+2. Return to Codex without copying anything else.
+3. Press `Control + V` in Codex to attach the clipboard image.
+
+Codex uses `Control + V` for image attachments rather than the usual macOS `⌘ V` text-paste shortcut. Other terminal apps may use a different image-paste workflow.
+
 ### Keyboard shortcuts
 
 | Action | Default shortcut |
