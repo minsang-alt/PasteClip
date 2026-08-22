@@ -5,7 +5,34 @@ struct PasteService {
 
     private static let tempDir = NSTemporaryDirectory() + "Clipbara/"
 
-    func paste(item: ClipboardItem) {
+    /// 설정 > General의 "항상 일반 텍스트로 붙여넣기" 값
+    nonisolated static let alwaysPlainTextDefaultsKey = "alwaysPastePlainText"
+
+    /// 서식 제거가 의미 있는 항목인지 (RTF/HTML만 해당)
+    static func supportsPlainText(_ item: ClipboardItem) -> Bool {
+        switch item.contentType {
+        case .richText, .html:
+            return !(item.textContent?.isEmpty ?? true)
+        default:
+            return false
+        }
+    }
+
+    /// 기본값(설정)과 Shift 수정자를 XOR로 합친다.
+    /// 설정이 꺼져 있으면 Shift = 서식 제거, 켜져 있으면 Shift = 서식 유지.
+    static func resolvePlainText() -> Bool {
+        let always = UserDefaults.standard.bool(forKey: alwaysPlainTextDefaultsKey)
+        let shiftHeld = NSEvent.modifierFlags.contains(.shift)
+        return always != shiftHeld
+    }
+
+    /// - Parameter asPlainText: nil이면 설정 + Shift 조합으로 자동 판단
+    func paste(item: ClipboardItem, asPlainText: Bool? = nil) {
+        if asPlainText ?? Self.resolvePlainText(), Self.supportsPlainText(item) {
+            pastePlainText(item: item)
+            return
+        }
+
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
 

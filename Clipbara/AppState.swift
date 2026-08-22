@@ -65,6 +65,14 @@ final class AppState {
         }
     }
 
+    /// 패널/핀보드 카드에서 공통으로 쓰는 붙여넣기 경로.
+    /// - Parameter asPlainText: nil이면 설정 + Shift 조합으로 자동 판단
+    func paste(_ item: ClipboardItem, asPlainText: Bool? = nil) {
+        clipboardMonitor.skipNextChange()
+        pasteService.paste(item: item, asPlainText: asPlainText)
+        hidePanel()
+    }
+
     func hidePanel() {
         previewItem = nil
         panelToast = nil

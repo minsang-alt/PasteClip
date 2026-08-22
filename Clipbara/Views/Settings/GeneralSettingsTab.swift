@@ -7,6 +7,7 @@ struct GeneralSettingsTab: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(AppState.self) private var appState
     @AppStorage("historyLimit") private var historyLimit: Int = 500
+    @AppStorage(PasteService.alwaysPlainTextDefaultsKey) private var alwaysPastePlainText: Bool = false
     @State private var launchAtLogin: Bool = SMAppService.mainApp.status == .enabled
     @State private var transferMessage: String?
     @State private var showTransferAlert = false
@@ -34,6 +35,23 @@ struct GeneralSettingsTab: View {
                         launchAtLogin = !newValue
                     }
                 }
+
+            Section("Pasting") {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: 5) {
+                            Text("Always Paste as Plain Text")
+                            InfoHoverButton(text: "Removes fonts, colors, and links from rich text and HTML clips, pasting only the text.")
+                        }
+                        Text("Hold \u{21e7} while pasting to switch for a single paste.")
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Toggle("", isOn: $alwaysPastePlainText)
+                        .labelsHidden()
+                }
+            }
 
             Section("Backup") {
                 LabeledContent("Export history, pinboards, and settings to a JSON file.") {

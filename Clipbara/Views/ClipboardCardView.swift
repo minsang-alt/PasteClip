@@ -62,7 +62,12 @@ struct ClipboardCardView: View {
 
     @ViewBuilder
     private var menuItems: some View {
-        Button("Paste") { onPaste(item) }
+        if PasteService.supportsPlainText(item) {
+            Button("Paste with Formatting") { appState.paste(item, asPlainText: false) }
+            Button("Paste as Plain Text") { appState.paste(item, asPlainText: true) }
+        } else {
+            Button("Paste") { onPaste(item) }
+        }
         if showsManagementMenu {
             Divider()
             Button("Rename") {
