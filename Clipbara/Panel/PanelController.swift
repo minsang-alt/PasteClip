@@ -31,6 +31,31 @@ final class PanelController {
         }
     }
 
+    /// Builds the panel and renders its first frame off screen so the first
+    /// hotkey press only has to animate. Called shortly after launch.
+    func prewarm(modelContainer: ModelContainer, appState: AppState) {
+        guard panel == nil else { return }
+        self.appState = appState
+
+        let screenFrame = (NSScreen.main ?? NSScreen.screens.first!).visibleFrame
+        let frame = panelFrame(in: screenFrame, itemCount: 0, y: screenFrame.origin.y)
+            .offsetBy(dx: 0, dy: -baseHeight)
+
+        let warm = ClipbaraPanel(contentRect: frame)
+        warm.alphaValue = 0
+        warm.contentView = NSHostingView(
+            rootView: HistoryPanelView()
+                .environment(appState)
+                .modelContainer(modelContainer)
+        )
+        warm.orderFrontRegardless()
+        warm.contentView?.layoutSubtreeIfNeeded()
+        warm.displayIfNeeded()
+        warm.orderOut(nil)
+        warm.alphaValue = 1
+        panel = warm
+    }
+
     func showPanel(modelContainer: ModelContainer, appState: AppState) {
         guard !isVisible else { return }
         self.appState = appState

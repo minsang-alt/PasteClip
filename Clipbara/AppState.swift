@@ -40,6 +40,13 @@ final class AppState {
             self?.previewItem = nil
         }
         setupHotkey()
+
+        // Render the panel once off screen so the first hotkey press is instant.
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .milliseconds(300))
+            guard let self, let container = self.modelContainer else { return }
+            self.panelController.prewarm(modelContainer: container, appState: self)
+        }
     }
 
     func togglePanel() {
