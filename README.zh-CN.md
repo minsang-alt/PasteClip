@@ -22,6 +22,13 @@
   <a href="https://github.com/mobrava/Clipbara/stargazers"><img src="https://img.shields.io/github/stars/mobrava/Clipbara?style=flat-square" alt="GitHub stars"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/mobrava/Clipbara?style=flat-square" alt="许可证"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-blue?style=flat-square" alt="macOS 14+">
+  <a href="https://apps.apple.com/app/clipbara/id6803537696?mt=12"><img src="https://img.shields.io/badge/Mac%20App%20Store-free-0D96F6?style=flat-square&logo=apple&logoColor=white" alt="Mac App Store 上的 Clipbara"></a>
+</p>
+
+<p align="center">
+  <a href="https://apps.apple.com/app/clipbara/id6803537696?mt=12"><strong>从 Mac App Store 下载</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/mobrava/Clipbara/releases/latest"><strong>下载 DMG</strong></a>
 </p>
 
 <p align="center">
@@ -40,7 +47,7 @@ Clipbara 是一款免费开源（GPL-3.0）的 macOS 剪贴板管理器，用原
 - **快速预览**：按 `空格` 进行 Quick Look 预览，支持全键盘操作
 - **隐私控制**：可排除指定应用（如密码管理器），历史上限可配置、自动清理
 - **对终端友好**：图片以 PNG + file URL 方式写入剪贴板，可以可靠地粘贴到 Ghostty / iTerm2（详见下方[终端中的图片剪贴](#终端中的图片剪贴)）
-- **完全本地**：基于 SwiftData 本地存储，唯一的网络请求是 Sparkle 检查更新
+- **完全本地**：基于 SwiftData 本地存储，DMG 版唯一的网络请求是 Sparkle 检查更新，App Store 版本不包含更新组件
 
 ## 截图
 
@@ -50,9 +57,15 @@ Clipbara 是一款免费开源（GPL-3.0）的 macOS 剪贴板管理器，用原
 
 ## 安装
 
-要求 **macOS 14 Sonoma 或更高版本**。
+要求 **macOS 14 Sonoma 或更高版本**，两个渠道都免费。
 
-### Homebrew（推荐）
+### Mac App Store
+
+[**从 Mac App Store 下载 Clipbara**](https://apps.apple.com/app/clipbara/id6803537696?mt=12)
+
+App Store 版开启了 App Sandbox，由 App Store 推送更新；DMG 版使用 Sparkle 自动更新，新功能会先在 DMG 上线。两个版本的 bundle ID 不同，历史记录分开存储；迁移时在旧版本中使用 **Settings → General → Backup → Export** 导出 JSON，再在新版本中 Import。两个版本同时运行会重复注册 `⌘⇧V`，请只保留一个。
+
+### Homebrew
 
 ```bash
 brew install --cask mobrava/tap/clipbara
@@ -62,7 +75,7 @@ brew install --cask mobrava/tap/clipbara
 
 从 [GitHub Releases](https://github.com/mobrava/Clipbara/releases/latest) 下载最新 `.dmg`，拖入「应用程序」文件夹。
 
-应用已使用 Apple Developer ID 签名并通过 Apple 公证（自 v1.1.11 起），首次启动不会出现安全提示。
+DMG 已使用 Apple Developer ID 签名并通过 Apple 公证（自 v1.1.11 起），首次启动不会出现安全提示。
 
 ## 终端中的图片剪贴
 

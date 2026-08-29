@@ -24,10 +24,13 @@
   <a href="https://github.com/mobrava/Clipbara/stargazers"><img src="https://img.shields.io/github/stars/mobrava/Clipbara?style=flat-square" alt="GitHub stars"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/mobrava/Clipbara?style=flat-square" alt="License"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-blue?style=flat-square" alt="macOS 14 or later">
+  <a href="https://apps.apple.com/app/clipbara/id6803537696?mt=12"><img src="https://img.shields.io/badge/Mac%20App%20Store-free-0D96F6?style=flat-square&logo=apple&logoColor=white" alt="Clipbara on the Mac App Store"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/mobrava/Clipbara/releases/latest"><strong>Download latest release</strong></a>
+  <a href="https://apps.apple.com/app/clipbara/id6803537696?mt=12"><strong>Get it on the Mac App Store</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/mobrava/Clipbara/releases/latest"><strong>Download the DMG</strong></a>
   &nbsp;·&nbsp;
   <a href="#installation"><strong>Install with Homebrew</strong></a>
 </p>
@@ -43,7 +46,7 @@
 - **Fast search and filters:** Search clip contents, titles, or source apps, then filter by content type or date.
 - **Pinboards:** Keep important clips in named collections and organize them with drag and drop.
 - **Quick Look:** Press `Space` to preview text, images, links, files, and colors before pasting.
-- **One-click copy:** Click any clip once — it lands on your clipboard and the panel closes instantly, ready for `⌘ V`.
+- **One-click copy:** Click any clip once. It lands on your clipboard and the panel closes, ready for `⌘ V`.
 - **Keyboard-first workflow:** Search, navigate, preview, and paste without reaching for the mouse.
 - **Flexible settings:** Configure shortcuts, history size, appearance, launch at login, and excluded apps.
 - **Private by default:** Clipboard data stays on your Mac with no account, server, analytics, or tracking.
@@ -74,16 +77,20 @@
 | Price | Free, open source (GPL-3.0) | Subscription | Free, open source (MIT) |
 | Interface | Card grid with visual previews | Card grid with visual previews | Compact menu-bar list |
 | Collections | Pinboards | Pinboards | — |
-| Sync across devices | No — 100% local by design | iCloud sync | No |
+| Sync across devices | No, 100% local by design | iCloud sync | No |
 | Notarized by Apple | Yes | Yes | Yes |
 
-If you need clipboard sync across devices, Paste's subscription earns its price. If you want the card-style workflow without one — and want to read every line of code that touches your clipboard — that is why Clipbara exists.
+If you need clipboard sync across devices, Paste's subscription earns its price. Clipbara covers the other case. You get the card-style workflow without a subscription, and you can read every line of code that touches your clipboard.
 
 ## Installation
 
-Clipbara requires **macOS 14 Sonoma or later**.
+Clipbara requires **macOS 14 Sonoma or later**. It is free on both channels.
 
-### Homebrew (recommended)
+### Mac App Store
+
+[**Download Clipbara on the Mac App Store**](https://apps.apple.com/app/clipbara/id6803537696?mt=12)
+
+### Homebrew
 
 ```bash
 brew install --cask mobrava/tap/clipbara
@@ -95,7 +102,30 @@ brew install --cask mobrava/tap/clipbara
 2. Open the disk image and drag the app into **Applications**.
 3. Launch Clipbara from the Applications folder.
 
-Clipbara is signed with an Apple Developer ID and notarized by Apple (as of v1.1.11), so it opens without any security warnings.
+The DMG is signed with an Apple Developer ID and notarized by Apple (as of v1.1.11), so it opens without any security warnings.
+
+### Which build should I install?
+
+Both builds are compiled from this repository and use the same storage format.
+
+| | Mac App Store | DMG and Homebrew |
+| --- | --- | --- |
+| Price | Free | Free |
+| Updates | Through the App Store | Built-in Sparkle updater |
+| App Sandbox | On | Off |
+| New features | Arrive one review cycle later | Arrive first |
+
+If you are not sure, take the App Store build.
+
+### Moving from the DMG to the App Store build
+
+The two builds use different bundle IDs, so they keep separate histories. To carry your clips over:
+
+1. In the DMG build, open **Settings → General → Backup → Export** and save the JSON file.
+2. Install the App Store build and open **Settings → General → Backup → Import**, or use the Import button on the welcome screen.
+3. Select the exported file. Existing clips are kept and duplicates are skipped.
+
+Quit one of the two builds afterwards. Running both at once registers `⌘ ⇧ V` twice and opens two panels. The DMG channel stays supported, so migrating is optional.
 
 ## Quick start
 
@@ -103,7 +133,7 @@ Clipbara is signed with an Apple Developer ID and notarized by Apple (as of v1.1
 2. Copy anything normally with `⌘ C`.
 3. Press `⌘ ⇧ V` to open your clipboard history.
 4. Start typing to search, or use `←` and `→` to move between clips.
-5. Click a clip once to copy it — the panel closes right away, so just press `⌘ V` where you need it. Or press `Space` to preview and `Return` to copy.
+5. Click a clip once to copy it. The panel closes right away, so press `⌘ V` where you need it. Or press `Space` to preview and `Return` to copy.
 
 The global shortcuts can be changed in **Settings → Shortcuts**.
 
@@ -140,7 +170,7 @@ Clipbara is designed to keep your clipboard private:
 - **No account or backend:** There is no sign-in and no server receiving your clipboard data.
 - **No telemetry:** Clipbara does not collect analytics, tracking, or usage data.
 - **App exclusions:** Prevent selected apps, such as password managers, from being recorded.
-- **Offline core:** Capture, search, preview, and paste work without an internet connection. Network access is used only for software updates through Sparkle.
+- **Offline core:** Capture, search, preview, and paste work without an internet connection. The DMG build reaches the network only to check for updates through Sparkle, and the App Store build ships without an updater.
 
 ## Build from source
 
@@ -168,7 +198,7 @@ Build and run the `Clipbara` scheme with `⌘ R` in Xcode.
 | Interface | SwiftUI + AppKit `NSPanel` |
 | Persistence | SwiftData |
 | Global shortcuts | [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) |
-| Updates | [Sparkle](https://github.com/sparkle-project/Sparkle) |
+| Updates | [Sparkle](https://github.com/sparkle-project/Sparkle) in the DMG build, App Store in the MAS build |
 | Project generation | [XcodeGen](https://github.com/yonaskolb/XcodeGen) |
 | Minimum target | macOS 14 |
 
