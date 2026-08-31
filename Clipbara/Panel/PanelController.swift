@@ -6,6 +6,12 @@ import SwiftData
 @Observable
 final class PanelController {
     private var panel: ClipbaraPanel?
+    /// The panel's SwiftUI content. Slid inside the fixed panel frame so the
+    /// window itself never has to travel off screen to animate.
+    private var contentHost: NSView?
+    /// The screen the panel was opened on. `panel.screen` is unreliable while
+    /// the panel sits flush against a screen edge next to another display.
+    private var presentedScreen: NSScreen?
     private var quickLookPanel: ClipboardQuickLookPanel?
     private var quickLookItem: ClipboardItem?
     private(set) var isVisible: Bool = false
@@ -61,17 +67,15 @@ final class PanelController {
         guard panel == nil else { return }
         self.appState = appState
 
+        // Build the warm panel at its real on screen position. Parking it below
+        // the screen would hand it to a display stacked underneath before the
+        // first hotkey press ever happens. It stays invisible via `alphaValue`.
         let screenFrame = activeScreen.visibleFrame
         let frame = panelFrame(in: screenFrame, itemCount: 0, y: screenFrame.origin.y)
-            .offsetBy(dx: 0, dy: -baseHeight)
 
         let warm = ClipbaraPanel(contentRect: frame)
         warm.alphaValue = 0
-        warm.contentView = NSHostingView(
-            rootView: HistoryPanelView()
-                .environment(appState)
-                .modelContainer(modelContainer)
-        )
+        warm.contentView = makeContentView(modelContainer: modelContainer, appState: appState, size: frame.size)
         warm.orderFrontRegardless()
         warm.contentView?.layoutSubtreeIfNeeded()
         warm.displayIfNeeded()
@@ -88,30 +92,48 @@ final class PanelController {
         let screenFrame = screen.visibleFrame
         let itemCount = visibleItemCount(modelContainer: modelContainer, selectedTab: appState.selectedTab)
         let endFrame = panelFrame(in: screenFrame, itemCount: itemCount, y: screenFrame.origin.y)
-        let startFrame = endFrame.offsetBy(dx: 0, dy: -endFrame.height)
+        presentedScreen = screen
 
         if panel == nil {
-            panel = ClipbaraPanel(contentRect: startFrame)
-
-            let hostingView = NSHostingView(
-                rootView: HistoryPanelView()
-                    .environment(appState)
-                    .modelContainer(modelContainer)
+            panel = ClipbaraPanel(contentRect: endFrame)
+            panel?.contentView = makeContentView(
+                modelContainer: modelContainer,
+                appState: appState,
+                size: endFrame.size
             )
-            panel?.contentView = hostingView
         } else {
-            panel?.setFrame(startFrame, display: false)
+            panel?.setFrame(endFrame, display: false)
         }
 
+        // The panel frame stays put; the content starts one panel height below
+        // the window and rides up into it. Moving the window itself would push
+        // it onto a display stacked underneath, which is how the panel used to
+        // end up on the wrong screen.
+        contentHost?.frame.origin.y = -endFrame.height
+        panel?.alphaValue = 1
         panel?.orderFrontRegardless()
         panel?.makeKey()
         panel?.makeFirstResponder(nil)
 
-        NSAnimationContext.runAnimationGroup { context in
+        // The window shadow is derived from the content alpha. While the
+        // content is only partly inside the frame the shadow would outline
+        // empty space, so drop it for the duration of the slide.
+        panel?.hasShadow = false
+
+        NSAnimationContext.runAnimationGroup({ [contentHost] context in
             context.duration = 0.25
             context.timingFunction = CAMediaTimingFunction(name: .easeOut)
-            panel?.animator().setFrame(endFrame, display: true)
-        }
+            if let contentHost {
+                var target = contentHost.frame
+                target.origin.y = 0
+                contentHost.animator().frame = target
+            }
+        }, completionHandler: { [weak self] in
+            Task { @MainActor in
+                self?.panel?.hasShadow = true
+                self?.panel?.invalidateShadow()
+            }
+        })
 
         isVisible = true
         appState.markPanelPresented()
@@ -123,7 +145,7 @@ final class PanelController {
     func resizeToContentItemCount(_ itemCount: Int, animated: Bool = true) {
         guard isVisible, let panel else { return }
 
-        let screen = panel.screen ?? activeScreen
+        let screen = presentedScreen ?? panel.screen ?? activeScreen
         let screenFrame = screen.visibleFrame
         let targetFrame = panelFrame(in: screenFrame, itemCount: itemCount, y: panel.frame.origin.y)
 
@@ -159,27 +181,28 @@ final class PanelController {
         onPanelWillHide?()
         hideQuickLook()
 
-        let screenFrame = (panel.screen ?? activeScreen).visibleFrame
         let panelHeight = panel.frame.height
-
-        let offscreenFrame = NSRect(
-            x: panel.frame.origin.x,
-            y: screenFrame.origin.y - panelHeight,
-            width: panel.frame.width,
-            height: panelHeight
-        )
 
         removeClickMonitor()
         removeMouseMonitor()
         removeKeyMonitor()
 
-        NSAnimationContext.runAnimationGroup({ context in
+        panel.hasShadow = false
+
+        NSAnimationContext.runAnimationGroup({ [contentHost] context in
             context.duration = 0.2
             context.timingFunction = CAMediaTimingFunction(name: .easeIn)
-            panel.animator().setFrame(offscreenFrame, display: true)
+            if let contentHost {
+                var target = contentHost.frame
+                target.origin.y = -panelHeight
+                contentHost.animator().frame = target
+            }
         }, completionHandler: { [weak self] in
             Task { @MainActor in
                 panel.orderOut(nil)
+                panel.hasShadow = true
+                self?.contentHost?.frame.origin.y = 0
+                self?.presentedScreen = nil
                 self?.isVisible = false
             }
         })
@@ -474,6 +497,31 @@ final class PanelController {
             guard let pinboard = try? context.fetch(descriptor).first else { return 0 }
             return pinboard.entries.filter { !$0.isDeleted && $0.clipboardItem != nil }.count
         }
+    }
+
+    /// Wraps the SwiftUI content in a plain container so it can be offset
+    /// inside the panel. Anything pushed outside the panel frame is clipped by
+    /// the window surface, which is what makes the slide read as a reveal.
+    private func makeContentView(
+        modelContainer: ModelContainer,
+        appState: AppState,
+        size: NSSize
+    ) -> NSView {
+        let host = NSHostingView(
+            rootView: HistoryPanelView()
+                .environment(appState)
+                .modelContainer(modelContainer)
+        )
+        host.frame = NSRect(origin: .zero, size: size)
+        host.autoresizingMask = [.width]
+
+        let container = NSView(frame: NSRect(origin: .zero, size: size))
+        container.wantsLayer = true
+        container.layer?.masksToBounds = true
+        container.addSubview(host)
+
+        contentHost = host
+        return container
     }
 
     private func panelFrame(in screenFrame: NSRect, itemCount: Int, y: CGFloat) -> NSRect {

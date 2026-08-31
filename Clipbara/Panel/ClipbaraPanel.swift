@@ -26,4 +26,12 @@ final class ClipbaraPanel: NSPanel {
 
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
+
+    /// AppKit nudges ordinary windows back inside a screen's usable area. The
+    /// panel is deliberately parked off the bottom edge while it animates, and
+    /// the default behaviour both shifts that position and re-homes the panel
+    /// to a neighbouring display. Place the panel exactly where asked.
+    override func constrainFrameRect(_ frameRect: NSRect, to screen: NSScreen?) -> NSRect {
+        frameRect
+    }
 }
