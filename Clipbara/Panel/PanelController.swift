@@ -23,6 +23,30 @@ final class PanelController {
     private let contentHorizontalPadding: CGFloat = 32
     private let maximumVisibleCardCount = 6
 
+    // MARK: - Screen Selection
+
+    /// Returns the screen that contains `point`, if any.
+    ///
+    /// Kept static and dependency free so the multi display placement rules can
+    /// be exercised without attaching real hardware.
+    static func screen(containing point: NSPoint, in screens: [NSScreen]) -> NSScreen? {
+        screens.first { NSMouseInRect(point, $0.frame, false) }
+    }
+
+    /// The display the user is actually working on.
+    ///
+    /// `NSScreen.main` resolves to the screen owning the key window, not the
+    /// screen the user is looking at. Clipbara is a menu bar app and is never
+    /// the active app when the hotkey fires, so `NSScreen.main` can point at
+    /// whichever display last held focus and the panel slides in on the wrong
+    /// screen. The pointer location matches the user's intent, so prefer it and
+    /// fall back to `NSScreen.main` only when the pointer is off screen.
+    private var activeScreen: NSScreen {
+        Self.screen(containing: NSEvent.mouseLocation, in: NSScreen.screens)
+            ?? NSScreen.main
+            ?? NSScreen.screens.first!
+    }
+
     func toggle(modelContainer: ModelContainer, appState: AppState) {
         if isVisible {
             hidePanel()
@@ -37,7 +61,7 @@ final class PanelController {
         guard panel == nil else { return }
         self.appState = appState
 
-        let screenFrame = (NSScreen.main ?? NSScreen.screens.first!).visibleFrame
+        let screenFrame = activeScreen.visibleFrame
         let frame = panelFrame(in: screenFrame, itemCount: 0, y: screenFrame.origin.y)
             .offsetBy(dx: 0, dy: -baseHeight)
 
@@ -60,7 +84,7 @@ final class PanelController {
         guard !isVisible else { return }
         self.appState = appState
 
-        let screen = NSScreen.main ?? NSScreen.screens.first!
+        let screen = activeScreen
         let screenFrame = screen.visibleFrame
         let itemCount = visibleItemCount(modelContainer: modelContainer, selectedTab: appState.selectedTab)
         let endFrame = panelFrame(in: screenFrame, itemCount: itemCount, y: screenFrame.origin.y)
@@ -99,7 +123,7 @@ final class PanelController {
     func resizeToContentItemCount(_ itemCount: Int, animated: Bool = true) {
         guard isVisible, let panel else { return }
 
-        let screen = panel.screen ?? NSScreen.main ?? NSScreen.screens.first!
+        let screen = panel.screen ?? activeScreen
         let screenFrame = screen.visibleFrame
         let targetFrame = panelFrame(in: screenFrame, itemCount: itemCount, y: panel.frame.origin.y)
 
@@ -135,7 +159,7 @@ final class PanelController {
         onPanelWillHide?()
         hideQuickLook()
 
-        let screenFrame = (NSScreen.main ?? NSScreen.screens.first!).visibleFrame
+        let screenFrame = (panel.screen ?? activeScreen).visibleFrame
         let panelHeight = panel.frame.height
 
         let offscreenFrame = NSRect(
@@ -380,7 +404,7 @@ final class PanelController {
         appState.selectForPreview(nil)
         quickLookItem = item
 
-        let screen = NSScreen.main ?? NSScreen.screens.first!
+        let screen = self.panel?.screen ?? activeScreen
         let screenFrame = screen.visibleFrame
 
         let panel: ClipboardQuickLookPanel
