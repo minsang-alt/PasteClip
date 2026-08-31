@@ -33,7 +33,7 @@ struct PinboardGridView: View {
                     let pinboardItems = orderedEntries.compactMap(\.clipboardItem)
 
                     ScrollViewReader { proxy in
-                        ScrollView(.horizontal, showsIndicators: true) {
+                        ScrollView(.horizontal, showsIndicators: false) {
                             LazyHGrid(rows: rows, spacing: 8) {
                                 ForEach(Array(orderedEntries.enumerated()), id: \.element.id) { index, entry in
                                     if let item = entry.clipboardItem {
