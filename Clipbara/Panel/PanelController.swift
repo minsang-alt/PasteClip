@@ -111,29 +111,42 @@ final class PanelController {
         // end up on the wrong screen.
         contentHost?.frame.origin.y = -endFrame.height
         panel?.alphaValue = 1
-        panel?.orderFrontRegardless()
-        panel?.makeKey()
-        panel?.makeFirstResponder(nil)
 
         // The window shadow is derived from the content alpha. While the
         // content is only partly inside the frame the shadow would outline
         // empty space, so drop it for the duration of the slide.
         panel?.hasShadow = false
 
-        NSAnimationContext.runAnimationGroup({ [contentHost] context in
-            context.duration = 0.25
-            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
-            if let contentHost {
+        panel?.orderFrontRegardless()
+        panel?.makeKey()
+        panel?.makeFirstResponder(nil)
+
+        // Ordering a window in is not instant: the window server needs a
+        // composited frame before anything reaches the screen. Starting the
+        // slide in this same turn meant the easeOut curve was already most of
+        // the way through by the time the panel actually appeared, so the
+        // content popped in instead of riding up. Push the parked first frame
+        // out now, then start the slide on the next main actor turn so the
+        // whole curve happens on screen. `hidePanel` never had this problem
+        // because its window is already visible when it animates.
+        panel?.contentView?.displayIfNeeded()
+        CATransaction.flush()
+
+        Task { @MainActor [weak self] in
+            guard let self, let contentHost = self.contentHost else { return }
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.25
+                context.timingFunction = CAMediaTimingFunction(name: .easeOut)
                 var target = contentHost.frame
                 target.origin.y = 0
                 contentHost.animator().frame = target
-            }
-        }, completionHandler: { [weak self] in
-            Task { @MainActor in
-                self?.panel?.hasShadow = true
-                self?.panel?.invalidateShadow()
-            }
-        })
+            }, completionHandler: {
+                Task { @MainActor [weak self] in
+                    self?.panel?.hasShadow = true
+                    self?.panel?.invalidateShadow()
+                }
+            })
+        }
 
         isVisible = true
         appState.markPanelPresented()
